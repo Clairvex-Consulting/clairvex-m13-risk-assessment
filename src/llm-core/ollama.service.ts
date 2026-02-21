@@ -11,7 +11,7 @@ export class OllamaService {
     this.model = new ChatOllama({
       baseUrl: process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
       model: process.env.OLLAMA_MODEL || 'mistral',
-      temperature: 0.3,
+      temperature: parseFloat(process.env.OLLAMA_TEMPERATURE || '0.3'),
     });
   }
 
@@ -26,6 +26,7 @@ export class OllamaService {
       const content = response.content as string;
 
       const jsonMatch = content.match(/```json\n?([\s\S]*?)\n?```/) ||
+                        content.match(/\{[\s\S]*?\}(?=\s*$)/) ||
                         content.match(/\{[\s\S]*\}/);
 
       if (!jsonMatch) {
