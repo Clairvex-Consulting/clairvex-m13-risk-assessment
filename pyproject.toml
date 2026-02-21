@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clairvex-m13"
+version = "0.1.0"
+description = "Module M13 - Risk Assessment Engine avec LLM local (Mistral 7B) pour génération automatique des 5 ateliers EBIOS RM"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.0",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+
+[project.scripts]
+clairvex-m13 = "clairvex_m13.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
