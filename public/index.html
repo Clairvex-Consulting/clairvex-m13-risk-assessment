@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CLAIRVEX M13 — Analyse de Risques EBIOS RM</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">C</div>
+        <div>
+          <h1>CLAIRVEX M13</h1>
+          <p class="subtitle">Moteur d'Analyse de Risques EBIOS RM v1.5</p>
+        </div>
+      </div>
+      <div class="header-badge">
+        <span class="badge">EBIOS RM</span>
+        <span class="badge badge-secondary">MITRE ATT&CK</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- FORMULAIRE -->
+    <section id="form-section" class="card">
+      <h2>Nouvelle Analyse de Risques</h2>
+      <form id="risk-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="organisation">Organisation *</label>
+            <input type="text" id="organisation" required minlength="3" maxlength="200"
+                   placeholder="Ex: Hôpital Universitaire de Paris">
+          </div>
+          <div class="form-group">
+            <label for="secteurActivite">Secteur d'activité *</label>
+            <select id="secteurActivite" required>
+              <option value="">-- Sélectionner --</option>
+              <option value="Santé">Santé</option>
+              <option value="Finance">Finance</option>
+              <option value="Énergie">Énergie</option>
+              <option value="Transport">Transport</option>
+              <option value="Défense">Défense</option>
+              <option value="Industrie">Industrie</option>
+              <option value="Numérique">Numérique</option>
+              <option value="Collectivité">Collectivité</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="descriptionSysteme">Description du système *</label>
+          <textarea id="descriptionSysteme" required minlength="10" maxlength="2000" rows="3"
+                    placeholder="Décrivez le système d'information ou le périmètre à analyser..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="contexteMetier">Contexte métier</label>
+          <textarea id="contexteMetier" maxlength="1000" rows="2"
+                    placeholder="Contexte supplémentaire (optionnel)..."></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="contraintesReglementaires">Contraintes réglementaires</label>
+            <input type="text" id="contraintesReglementaires"
+                   placeholder="HDS, RGPD, NIS2 (séparés par des virgules)">
+          </div>
+          <div class="form-group">
+            <label for="enjeuxMetier">Enjeux métier</label>
+            <input type="text" id="enjeuxMetier"
+                   placeholder="Continuité des soins, Protection données (séparés par des virgules)">
+          </div>
+        </div>
+        <button type="submit" id="submit-btn">
+          <span class="btn-text">Lancer l'analyse EBIOS RM</span>
+          <span class="btn-loader hidden">
+            <span class="spinner"></span>
+            Analyse en cours...
+          </span>
+        </button>
+      </form>
+    </section>
+
+    <!-- CHARGEMENT -->
+    <section id="loading-section" class="hidden">
+      <div class="loading-card card">
+        <div class="loading-spinner-large"></div>
+        <h2>Analyse EBIOS RM en cours</h2>
+        <p class="loading-subtitle">Génération des 5 ateliers via l'intelligence artificielle...</p>
+        <div class="loading-steps">
+          <div class="loading-step" data-step="1">
+            <span class="step-dot"></span>
+            <span>Atelier 1 — Cadrage et Socle de Sécurité</span>
+          </div>
+          <div class="loading-step" data-step="2">
+            <span class="step-dot"></span>
+            <span>Atelier 2 — Sources de Risque</span>
+          </div>
+          <div class="loading-step" data-step="3">
+            <span class="step-dot"></span>
+            <span>Atelier 3 — Scénarios Stratégiques</span>
+          </div>
+          <div class="loading-step" data-step="4">
+            <span class="step-dot"></span>
+            <span>Atelier 4 — Scénarios Opérationnels</span>
+          </div>
+          <div class="loading-step" data-step="5">
+            <span class="step-dot"></span>
+            <span>Atelier 5 — Plan de Traitement</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RÉSULTATS -->
+    <section id="results-section" class="hidden">
+
+      <!-- EN-TÊTE RÉSUMÉ -->
+      <div class="results-header card">
+        <div class="results-header-top">
+          <div>
+            <h2 id="result-org"></h2>
+            <p id="result-meta" class="text-muted"></p>
+          </div>
+          <div id="risk-level-badge" class="risk-level-badge"></div>
+        </div>
+        <div class="reco-list">
+          <h3>Recommandations Prioritaires</h3>
+          <ul id="reco-list"></ul>
+        </div>
+        <button id="new-analysis-btn" class="btn-outline">Nouvelle analyse</button>
+      </div>
+
+      <!-- NAVIGATION ONGLETS -->
+      <div class="tabs">
+        <button class="tab active" data-tab="atelier1">1. Cadrage</button>
+        <button class="tab" data-tab="atelier2">2. Sources</button>
+        <button class="tab" data-tab="atelier3">3. Stratégiques</button>
+        <button class="tab" data-tab="atelier4">4. Opérationnels</button>
+        <button class="tab" data-tab="atelier5">5. Traitement</button>
+      </div>
+
+      <!-- ATELIER 1 -->
+      <div id="tab-atelier1" class="tab-content active">
+        <div class="card">
+          <h3>Cadrage et Socle de Sécurité</h3>
+          <div class="section-block">
+            <h4>Périmètre</h4>
+            <p id="a1-perimetre"></p>
+          </div>
+          <div class="section-block">
+            <h4>Valeurs Métier — Critères CIDT</h4>
+            <div id="a1-valeurs" class="valeurs-grid"></div>
+          </div>
+          <div class="section-block">
+            <h4>Événements Redoutés</h4>
+            <div id="a1-evenements" class="table-container"></div>
+          </div>
+          <div class="section-block">
+            <h4>Socle de Sécurité Existant</h4>
+            <ul id="a1-socle" class="checklist"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATELIER 2 -->
+      <div id="tab-atelier2" class="tab-content">
+        <div class="card">
+          <h3>Sources de Risque</h3>
+          <div class="section-block">
+            <h4>Sources de Risque Identifiées</h4>
+            <div id="a2-sources" class="sources-grid"></div>
+          </div>
+          <div class="section-block">
+            <h4>Objectifs Visés</h4>
+            <div id="a2-objectifs"></div>
+          </div>
+          <div class="section-block">
+            <h4>Couples SR/OV</h4>
+            <div id="a2-couples" class="table-container"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATELIER 3 -->
+      <div id="tab-atelier3" class="tab-content">
+        <div class="card">
+          <h3>Scénarios Stratégiques</h3>
+          <div class="section-block">
+            <h4>Matrice de Risques</h4>
+            <div id="a3-matrice" class="matrice-container"></div>
+          </div>
+          <div class="section-block">
+            <h4>Scénarios Stratégiques</h4>
+            <div id="a3-scenarios"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATELIER 4 -->
+      <div id="tab-atelier4" class="tab-content">
+        <div class="card">
+          <h3>Scénarios Opérationnels</h3>
+          <div class="section-block">
+            <h4>Synthèse des Mesures</h4>
+            <div id="a4-synthese" class="synthese-grid"></div>
+          </div>
+          <div class="section-block">
+            <h4>Scénarios Opérationnels Détaillés</h4>
+            <div id="a4-scenarios"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATELIER 5 -->
+      <div id="tab-atelier5" class="tab-content">
+        <div class="card">
+          <h3>Plan de Traitement du Risque</h3>
+          <div class="section-block">
+            <h4>Synthèse</h4>
+            <p id="a5-synthese" class="synthese-text"></p>
+          </div>
+          <div class="section-block">
+            <h4>Plan Sécurité 3 Ans</h4>
+            <div id="a5-plan" class="plan-timeline"></div>
+          </div>
+          <div class="section-block">
+            <h4>Actions de Traitement</h4>
+            <div id="a5-actions" class="table-container"></div>
+          </div>
+          <div class="section-block columns-2">
+            <div>
+              <h4>Risques Acceptés</h4>
+              <ul id="a5-acceptes" class="risk-list risk-accepted"></ul>
+            </div>
+            <div>
+              <h4>Risques Transférés</h4>
+              <ul id="a5-transferes" class="risk-list risk-transferred"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ERREUR -->
+    <section id="error-section" class="hidden">
+      <div class="card error-card">
+        <div class="error-icon">!</div>
+        <h2>Erreur</h2>
+        <p id="error-message"></p>
+        <button id="retry-btn" class="btn-outline">Réessayer</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>CLAIRVEX M13 — EBIOS RM v1.5 — Propulsé par l'IA (Mistral 7B)</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
